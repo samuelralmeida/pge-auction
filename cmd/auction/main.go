@@ -35,7 +35,10 @@ func main() {
 
 	router := gin.Default()
 
-	userController, bidController, auctionsController := initDependencies(databaseConnection)
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
+	userController, bidController, auctionsController := initDependencies(ctx, databaseConnection)
 
 	router.GET("/auction", auctionsController.FindAuctions)
 	router.GET("/auction/:auctionId", auctionsController.FindAuctionById)
@@ -48,7 +51,7 @@ func main() {
 	router.Run(":8080")
 }
 
-func initDependencies(database *mongo.Database) (
+func initDependencies(ctx context.Context, database *mongo.Database) (
 	userController *user_controller.UserController,
 	bidController *bid_controller.BidController,
 	auctionController *auction_controller.AuctionController) {
@@ -62,6 +65,8 @@ func initDependencies(database *mongo.Database) (
 	auctionController = auction_controller.NewAuctionController(
 		auction_usecase.NewAuctionUseCase(auctionRepository, bidRepository))
 	bidController = bid_controller.NewBidController(bid_usecase.NewBidUseCase(bidRepository))
+
+	go auctionRepository.StartAuctionExpirationWatcher(ctx)
 
 	return
 }

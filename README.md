@@ -32,3 +32,10 @@ Para essa tarefa, você utilizará o go routines e deverá se concentrar no proc
 - O código-fonte completo da implementação.
 - Documentação explicando como rodar o projeto em ambiente dev.
 - Utilize docker/docker-compose para podermos realizar os testes de sua aplicação.
+
+## ORIENTAÇÕES PARA EXECUÇÃO
+
+- para executar o projeto `docker compose up --build`
+- a execução inicia uma *goroutine* que a cada intervalo fecha leilões abertos de acordo com o timestamp do leilão
+- essa função é `StartAuctionExpirationWatcher` em `internal/infra/database/auction/create_auction.go`
+- essa intervalo para checar e fechar leilões pode ser controlado pela env AUCTION_EXPIRATION_WATCHER_SECONDS no arquivo `cmd/auction/.env`

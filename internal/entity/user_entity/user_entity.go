@@ -2,6 +2,7 @@ package user_entity
 
 import (
 	"context"
+
 	"github.com/samuelralmeida/pge-auction/internal/internal_error"
 )
 
