@@ -1,4 +1,4 @@
-package auction
+package auction_test
 
 import (
 	"context"
@@ -8,6 +8,7 @@ import (
 	"github.com/benweissmann/memongo"
 
 	"github.com/samuelralmeida/pge-auction/internal/entity/auction_entity"
+	"github.com/samuelralmeida/pge-auction/internal/infra/database/auction"
 	"github.com/samuelralmeida/pge-auction/internal/internal_error"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -30,7 +31,7 @@ func TestAuctionRepository_expireAuctions_markAsCompleted(t *testing.T) {
 
 	database := client.Database("auctions-test")
 
-	repo := NewAuctionRepository(database)
+	repo := auction.NewAuctionRepository(database)
 
 	err = repo.CreateAuction(ctx, &auction_entity.Auction{
 		Id:          "expired-auction-id",
@@ -51,7 +52,7 @@ func TestAuctionRepository_expireAuctions_markAsCompleted(t *testing.T) {
 		return
 	}
 
-	repo.expireAuctions(ctx)
+	repo.ExpireAuctions(ctx)
 
 	updatedAuction, err := repo.FindAuctionById(ctx, "expired-auction-id")
 	errResp = err.(*internal_error.InternalError)
@@ -82,7 +83,7 @@ func TestAuctionRepository_expireAuctions_notMarkAsCompleted(t *testing.T) {
 
 	database := client.Database("auctions-test")
 
-	repo := NewAuctionRepository(database)
+	repo := auction.NewAuctionRepository(database)
 
 	err = repo.CreateAuction(ctx, &auction_entity.Auction{
 		Id:          "expired-auction-id",
@@ -103,7 +104,7 @@ func TestAuctionRepository_expireAuctions_notMarkAsCompleted(t *testing.T) {
 		return
 	}
 
-	repo.expireAuctions(ctx)
+	repo.ExpireAuctions(ctx)
 
 	updatedAuction, err := repo.FindAuctionById(ctx, "expired-auction-id")
 	errResp = err.(*internal_error.InternalError)

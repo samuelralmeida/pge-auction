@@ -62,7 +62,7 @@ func (ar *AuctionRepository) StartAuctionExpirationWatcher(ctx context.Context) 
 	for {
 		select {
 		case <-ticker.C:
-			ar.expireAuctions(ctx)
+			ar.ExpireAuctions(ctx)
 		case <-ctx.Done():
 			logger.Info("Auction expiration watcher stopped")
 			return
@@ -70,7 +70,7 @@ func (ar *AuctionRepository) StartAuctionExpirationWatcher(ctx context.Context) 
 	}
 }
 
-func (ar *AuctionRepository) expireAuctions(ctx context.Context) {
+func (ar *AuctionRepository) ExpireAuctions(ctx context.Context) {
 	now := time.Now().Unix()
 	filter := bson.M{
 		"status":    auction_entity.Active,
